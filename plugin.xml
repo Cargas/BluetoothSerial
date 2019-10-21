@@ -12,14 +12,20 @@
     <repo>https://github.com/don/BluetoothSerial.git</repo>
     <issue>https://github.com/don/BluetoothSerial/issues</issue>
 
-    <js-module src="www/bluetoothSerial.js" name="bluetoothSerial">
+    <js-module src="www/bluetoothSerial.js" name="bluetoothSerialMeter">
         <clobbers target="window.bluetoothSerial" />
+    </js-module>
+        <js-module src="www/bluetoothSerial2.js" name="bluetoothSerialPrinter">
+        <clobbers target="window.bluetoothSerialPrinter" />
     </js-module>
 
     <platform name="android">
 
         <config-file target="res/xml/config.xml" parent="/widget">
             <feature name="BluetoothSerial">
+                <param name="android-package" value="com.megster.cordova.BluetoothSerial"/>
+            </feature>
+            <feature name="BluetoothSerial2">
                 <param name="android-package" value="com.megster.cordova.BluetoothSerial"/>
             </feature>
         </config-file>
