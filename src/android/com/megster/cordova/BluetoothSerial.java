@@ -313,8 +313,12 @@ public class BluetoothSerial extends CordovaPlugin {
                         Log.e(TAG, "Problem converting device to JSON", e);
                     }
                 } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                    callbackContext.success(unpairedDevices);
-                    cordova.getActivity().unregisterReceiver(this);
+                    try{
+                        callbackContext.success(unpairedDevices);
+                        cordova.getActivity().unregisterReceiver(this);
+                    } catch (IllegalArgumentException e) {
+                        Log.e(TAG, "Illegal Argument exception. Not sure why this happens. Maybe we aren't registered to begin with", e);   
+                    }
                 }
             }
         };
@@ -360,53 +364,57 @@ public class BluetoothSerial extends CordovaPlugin {
     private final Handler mHandler = new Handler() {
 
          public void handleMessage(Message msg) {
-             switch (msg.what) {
-                 case MESSAGE_READ:
-                    buffer.append((String)msg.obj);
-
-                    if (dataAvailableCallback != null) {
-                        sendDataToSubscriber();
-                    }
-
-                    break;
-                 case MESSAGE_READ_RAW:
-                    if (rawDataAvailableCallback != null) {
-                        byte[] bytes = (byte[]) msg.obj;
-                        sendRawDataToSubscriber(bytes);
-                    }
-                    break;
-                 case MESSAGE_STATE_CHANGE:
-
-                    if(D) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
-                    switch (msg.arg1) {
-                        case BluetoothSerialService.STATE_CONNECTED:
-                            Log.i(TAG, "BluetoothSerialService.STATE_CONNECTED");
-                            notifyConnectionSuccess();
-                            break;
-                        case BluetoothSerialService.STATE_CONNECTING:
-                            Log.i(TAG, "BluetoothSerialService.STATE_CONNECTING");
-                            break;
-                        case BluetoothSerialService.STATE_LISTEN:
-                            Log.i(TAG, "BluetoothSerialService.STATE_LISTEN");
-                            break;
-                        case BluetoothSerialService.STATE_NONE:
-                            Log.i(TAG, "BluetoothSerialService.STATE_NONE");
-                            break;
-                    }
-                    break;
-                case MESSAGE_WRITE:
-                    //  byte[] writeBuf = (byte[]) msg.obj;
-                    //  String writeMessage = new String(writeBuf);
-                    //  Log.i(TAG, "Wrote: " + writeMessage);
-                    break;
-                case MESSAGE_DEVICE_NAME:
-                    Log.i(TAG, msg.getData().getString(DEVICE_NAME));
-                    break;
-                case MESSAGE_TOAST:
-                    String message = msg.getData().getString(TOAST);
-                    notifyConnectionLost(message);
-                    break;
-             }
+            try{
+              switch (msg.what) {
+                  case MESSAGE_READ:
+                     buffer.append((String)msg.obj);
+ 
+                     if (dataAvailableCallback != null) {
+                         sendDataToSubscriber();
+                     }
+ 
+                     break;
+                  case MESSAGE_READ_RAW:
+                     if (rawDataAvailableCallback != null) {
+                         byte[] bytes = (byte[]) msg.obj;
+                         sendRawDataToSubscriber(bytes);
+                     }
+                     break;
+                  case MESSAGE_STATE_CHANGE:
+ 
+                     if(D) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
+                     switch (msg.arg1) {
+                         case BluetoothSerialService.STATE_CONNECTED:
+                             Log.i(TAG, "BluetoothSerialService.STATE_CONNECTED");
+                             notifyConnectionSuccess();
+                             break;
+                         case BluetoothSerialService.STATE_CONNECTING:
+                             Log.i(TAG, "BluetoothSerialService.STATE_CONNECTING");
+                             break;
+                         case BluetoothSerialService.STATE_LISTEN:
+                             Log.i(TAG, "BluetoothSerialService.STATE_LISTEN");
+                             break;
+                         case BluetoothSerialService.STATE_NONE:
+                             Log.i(TAG, "BluetoothSerialService.STATE_NONE");
+                             break;
+                     }
+                     break;
+                 case MESSAGE_WRITE:
+                     //  byte[] writeBuf = (byte[]) msg.obj;
+                     //  String writeMessage = new String(writeBuf);
+                     //  Log.i(TAG, "Wrote: " + writeMessage);
+                     break;
+                 case MESSAGE_DEVICE_NAME:
+                     Log.i(TAG, msg.getData().getString(DEVICE_NAME));
+                     break;
+                 case MESSAGE_TOAST:
+                     String message = msg.getData().getString(TOAST);
+                     notifyConnectionLost(message);
+                     break;
+              }
+            } catch (NullPointerException e) {
+                Log.e(TAG, "Error handling message. Null Pointer Exception.", e);
+            }
          }
     };
 

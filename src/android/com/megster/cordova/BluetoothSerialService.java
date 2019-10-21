@@ -392,6 +392,8 @@ public class BluetoothSerialService {
                     connectionFailed();
                     return;
                 }
+            } catch(NullPointerException e) {
+                Log.e(TAG, "close() of connect null socket failed", e);
             }
 
             // Reset the ConnectThread because we're done
@@ -408,6 +410,8 @@ public class BluetoothSerialService {
                 mmSocket.close();
             } catch (IOException e) {
                 Log.e(TAG, "close() of connect " + mSocketType + " socket failed", e);
+            } catch(NullPointerException e) {
+                Log.e(TAG, "close() of connect null socket failed", e);
             }
         }
     }
