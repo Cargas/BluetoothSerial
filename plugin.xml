@@ -2,20 +2,20 @@
 <plugin
     xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    id="cordova-plugin-bluetooth-serial"
+    id="cordova-plugin-bluetooth-serial-cargas"
     version="0.4.7">
 
     <name>Bluetooth Serial</name>
     <description>Bluetooth Serial Communication Plugin</description>
     <license>Apache 2.0</license>
     <keywords>bluetooth, BLE, arduino</keywords>
-    <repo>https://github.com/don/BluetoothSerial.git</repo>
-    <issue>https://github.com/don/BluetoothSerial/issues</issue>
+    <repo>https://github.com/Cargas/BluetoothSerial.git</repo>
+    <issue>https://github.com/Cargas/BluetoothSerial/issues</issue>
 
     <js-module src="www/bluetoothSerial.js" name="bluetoothSerialMeter">
-        <clobbers target="window.bluetoothSerial" />
+        <clobbers target="window.bluetoothSerialMeter" />
     </js-module>
-        <js-module src="www/bluetoothSerial2.js" name="bluetoothSerialPrinter">
+    <js-module src="www/bluetoothSerial2.js" name="bluetoothSerialPrinter">
         <clobbers target="window.bluetoothSerialPrinter" />
     </js-module>
 
