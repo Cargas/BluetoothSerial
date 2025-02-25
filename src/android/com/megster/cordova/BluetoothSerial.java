@@ -90,7 +90,10 @@ public class BluetoothSerial extends CordovaPlugin {
     private static final String BLUETOOTH_CONNECT = Manifest.permission.BLUETOOTH_CONNECT;
     private static final String BLUETOOTH_SCAN = Manifest.permission.BLUETOOTH_SCAN;
     private static final int CHECK_PERMISSIONS_REQ_CODE = 2;
+    private static final int CHECK_PERMISSIONS_REQ_CODE_LIST = 3;
     private CallbackContext permissionCallback;
+    private CallbackContext permissionCallbackList;
+    
 
     @Override
     public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
@@ -108,8 +111,24 @@ public class BluetoothSerial extends CordovaPlugin {
         boolean validAction = true;
 
         if (action.equals(LIST)) {
+            ArrayList<String> permissionsToRequest = new ArrayList<String>();
+            if (!cordova.hasPermission(ACCESS_COARSE_LOCATION)) {
+                permissionsToRequest.add(ACCESS_COARSE_LOCATION);
+            }
+            if (!cordova.hasPermission(BLUETOOTH_CONNECT)) {
+                permissionsToRequest.add(BLUETOOTH_CONNECT);
+            }
+            if (!cordova.hasPermission(BLUETOOTH_SCAN)) {
+                permissionsToRequest.add(BLUETOOTH_SCAN);
+            }
 
-            listBondedDevices(callbackContext);
+            if (permissionsToRequest.isEmpty()) {
+                listBondedDevices(callbackContext);
+            } else {
+                permissionCallbackList = callbackContext;
+                cordova.requestPermissions(this, CHECK_PERMISSIONS_REQ_CODE_LIST, permissionsToRequest.toArray(new String[0]));
+            }
+
 
         } else if (action.equals(CONNECT)) {
 
@@ -507,9 +526,14 @@ public class BluetoothSerial extends CordovaPlugin {
 
         switch(requestCode) {
             case CHECK_PERMISSIONS_REQ_CODE:
-                LOG.d(TAG, "User granted location permission");
+                LOG.d(TAG, "User granted unpaired bluetooth permission");
                 discoverUnpairedDevices(permissionCallback);
                 break;
+            case CHECK_PERMISSIONS_REQ_CODE_LIST:
+                LOG.d(TAG, "User granted bonded bluetooth permission");
+                listBondedDevices(permissionCallbackList);
+                break;
+            
         }
     }
 }
