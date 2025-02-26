@@ -500,15 +500,16 @@ public class BluetoothSerial extends CordovaPlugin {
                 LOG.d(TAG, String.format("User *rejected* permission: %s", permissions[i]));
             }
         }
+        while(!pendingActions.isEmpty()){
+            int itemID = pendingActions.keySet().iterator().next();
+            CordovaAction action = pendingActions.remove(itemID);
 
-        CordovaAction action = pendingActions.remove(requestCode);
-
-        if(!permissionsGranted) {
-            action.callbackContext.error("Bluetooth permissions are required for bluetooth communication.");
-            return;
-        } else {
-            LOG.d(TAG, "User granted bluetooth permission");
-            execute(action.action, action.args, action.callbackContext);
+            if(!permissionsGranted) {
+                action.callbackContext.error("Bluetooth permissions are required for bluetooth communication.");
+            } else {
+                LOG.d(TAG, "User granted bluetooth permission");
+                execute(action.action, action.args, action.callbackContext);
+            }
         }
     }
 
