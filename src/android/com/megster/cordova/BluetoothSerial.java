@@ -109,14 +109,16 @@ public class BluetoothSerial extends CordovaPlugin {
 
         boolean validAction = true;
         ArrayList<String> permissionsToRequest = new ArrayList<String>();
-        if (!cordova.hasPermission(ACCESS_COARSE_LOCATION)) {
-            permissionsToRequest.add(ACCESS_COARSE_LOCATION);
-        }
-        if (!cordova.hasPermission(BLUETOOTH_CONNECT)) {
-            permissionsToRequest.add(BLUETOOTH_CONNECT);
-        }
-        if (!cordova.hasPermission(BLUETOOTH_SCAN)) {
-            permissionsToRequest.add(BLUETOOTH_SCAN);
+        if( Build.VERSION.SDK >= Build.VERSION_CODES.S) {
+          if (!cordova.hasPermission(ACCESS_COARSE_LOCATION)) {
+              permissionsToRequest.add(ACCESS_COARSE_LOCATION);
+          }
+          if (!cordova.hasPermission(BLUETOOTH_CONNECT)) {
+              permissionsToRequest.add(BLUETOOTH_CONNECT);
+          }
+          if (!cordova.hasPermission(BLUETOOTH_SCAN)) {
+              permissionsToRequest.add(BLUETOOTH_SCAN);
+          }
         }
 
         if(!permissionsToRequest.isEmpty()) {
