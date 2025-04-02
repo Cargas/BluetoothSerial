@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 import org.apache.cordova.CordovaArgs;
@@ -109,7 +110,7 @@ public class BluetoothSerial extends CordovaPlugin {
 
         boolean validAction = true;
         ArrayList<String> permissionsToRequest = new ArrayList<String>();
-        if( Build.VERSION.SDK >= Build.VERSION_CODES.S) {
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
           if (!cordova.hasPermission(ACCESS_COARSE_LOCATION)) {
               permissionsToRequest.add(ACCESS_COARSE_LOCATION);
           }
